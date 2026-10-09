@@ -5,7 +5,7 @@
 
 ---
 
-## 1. Test Plan (One-Page)
+## 1. Test Plan
 
 ### 1.1 Scope
 
@@ -222,8 +222,8 @@
 | **REQ-4**      | Cumulative daily limit = 1,000,000 KZT, resetting at 00:00:00 Almaty time. | TR-AMT-008, TR-AMT-009, TR-AMT-012 | Decision Table + Time Boundary Analysis | **Full Coverage** | Covers over-limit rejection and midnight timezone reset.                                                          |
 | **REQ-5**      | SMS OTP valid for 120s; 3 invalid attempts cancel transaction.             | TR-AMT-010, TR-AMT-011             | State Transition Testing                | **Full Coverage** | Covers timeout transition and lock-out state.                                                                     |
 | **REQ-6**      | Conflict Rule: Single amount error takes priority over daily limit error.  | TR-AMT-009                         | Decision Table Priority Rules           | **Full Coverage** | Verified priority error message output.                                                                           |
-| **REQ-7**      | **UNCOVERED:** SMS Resend Cool-down and Max Resend Attempts.               | _None_                             | N/A                                     | **NOT COVERED**   | **Reason:** Specification lacks requirements defining resend interval (e.g., 60s timer) or daily SMS resend caps. |
-| **REQ-8**      | **UNCOVERED:** Mobile UI Input Masking / Non-Numeric Paste Handling.       | _None_                             | N/A                                     | **NOT COVERED**   | **Reason:** Lack of mobile client specification for paste buffer stripping or soft-keyboard restrictions.         |
+| **REQ-7**      | SMS Resend Cool-down and Max Resend Attempts.                              | -                                  | -                                       | **NOT COVERED**   | **Reason:** Specification lacks requirements defining resend interval (e.g., 60s timer) or daily SMS resend caps. |
+| **REQ-8**      | Mobile UI Input Masking / Non-Numeric Paste Handling.                      | -                                  | -                                       | **NOT COVERED**   | **Reason:** Lack of mobile client specification for paste buffer stripping or soft-keyboard restrictions.         |
 
 ---
 
