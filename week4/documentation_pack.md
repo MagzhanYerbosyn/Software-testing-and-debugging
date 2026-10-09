@@ -227,7 +227,7 @@
 
 ---
 
-## 4. Release Checklist: SMS Code Flow (Max 12 Items)
+## 4. Release Checklist: SMS Code Flow
 
 - [ ] **SMS-01:** SMS Gateway API integration health-check endpoint returns HTTP 200 status in production environment.
 - [ ] **SMS-02:** OTP generation service generates strictly 6-digit numeric codes with leading zeros permitted (e.g., `004819`).
