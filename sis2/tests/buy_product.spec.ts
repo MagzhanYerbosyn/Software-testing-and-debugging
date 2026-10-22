@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.only('should buy a product', async ({ page }) => {
+test('should buy a product', async ({ page }) => {
   await page.goto('/');
 
   const container = page.getByTestId('');
