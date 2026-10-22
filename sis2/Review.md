@@ -37,3 +37,13 @@ Add to cart → cart shows the right item and quantity → checkout completes
 - asked for getAttribute functionality. I had some suggestions, but wanted to be sure
 - <img src='./screenshots/get_product_error.png' width='300'>
   wrong using first() to locator, AI helped to fix
+
+## Test case 4. Compare two products
+
+### Description of test case
+
+Open two products, capture name and price, assert the comparison you state
+
+### Where i used AI and why
+
+- No AI usage
