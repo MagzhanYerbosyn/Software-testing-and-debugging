@@ -1,0 +1,13 @@
+# Here is review of my test and what i changed based on AI results
+
+## Test case 1. Register a new customer
+
+### Description of test case
+
+A unique new account is created and the user ends up signed in or on the login page
+
+### Where i used AI and why
+
+- I wrote first demo test by myself. There was raw url link to https://practicesoftwaretesting.com/ . In AI first review, he said that i can write baseURL in playwright.config.ts, so i can write '/' path in my project.
+- Second time i used AI when i got stuck in debug process. I runned npx playwright --project=chromium (to check only chromium while debugging to make test writing process faster) --debug. The AI said that the problem might be that when i used getByTestId, Playwright is seeking for data-test-id, so i checked the html and there is data-test. Firstly, i thought it may find it and there will be no problem. So i changed test attribute in playwright config and it worked.
+- I asked him to write me a pattern, so i do not have to write exact url path to check.
