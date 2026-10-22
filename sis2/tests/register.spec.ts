@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.only('register a new customer successfully', async ({ page }) => {
+test('register a new customer successfully', async ({ page }) => {
   const uniqueEmail = `user_${Date.now()}@example.com`;
   const uniquePassword = `Pass_${Date.now()}!aB9`;
 
