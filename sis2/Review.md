@@ -21,3 +21,19 @@ Valid credentials reach the account page; invalid ones show the error and do not
 ### Where i used AI and why
 
 - Wrote two tests by myself. Then after tests successfully completed, i shared my code with AI to do review of my code. He suggested me to use beforeEach to not duplicate first rows in each login test. So i refactored my code where i used test.describe and beforeEach
+
+## Test case 3. Buy a product
+
+### Description of test case
+
+Add to cart → cart shows the right item and quantity → checkout completes
+
+### Where i used AI and why
+
+- asked for how to put a variable into url pattern check. Recommended to use new RegExp
+- <img src='./screenshots/skipping_add_button.png' width='300'>
+  Here forgot to use click() for button. AI helped to find mistake
+- in first tests i hardcoded data-test, then i found that items data-test changes sometimes, so i asked AI how can i get first element of container. Further, when i saw that some tests got error, because first item sometimes can be out of stock. So i prompted to AI how can i write a loop, so if first item is out of stock, check the next item and so on
+- asked for getAttribute functionality. I had some suggestions, but wanted to be sure
+- <img src='./screenshots/get_product_error.png' width='300'>
+  wrong using first() to locator, AI helped to fix
