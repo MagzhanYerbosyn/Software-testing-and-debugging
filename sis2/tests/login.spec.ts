@@ -33,6 +33,8 @@ test.only('invalid email log in', async ({ page }) => {
 
   await page.getByTestId('login-submit').click();
 
-  await expect(page.getByTestId('login-error')).toBeVisible();
-  await expect(page.getByTestId('login-error')).toHaveText('Invalid email or password');
+  const errorMessage = page.getByTestId('login-error');
+
+  await expect(errorMessage).toBeVisible();
+  await expect(errorMessage).toHaveText('Invalid email or password');
 });
