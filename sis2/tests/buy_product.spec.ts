@@ -1,33 +1,66 @@
 import { expect, test } from '@playwright/test';
 
 test.only('should buy a product', async ({ page }) => {
-  const products = [
-    {
-      name: 'Pliers',
-      testId: 'product-01M5J8X2RR6V0A3VGDS59Q3SST',
-    },
-  ];
-
-  const productName = products[0].name;
-  const productId = products[0].testId.split('-')[1];
-  const randomCount = Math.floor(Math.random() * 10 + 1);
-
   await page.goto('/');
 
-  await page.getByTestId(products[0].testId).click();
+  const container = page.getByTestId('');
+  const product = container.locator('a.card').first();
+  const productName = await product.getByTestId('product-name').textContent();
+  const productTestId = (await product.getAttribute('data-test')) || '';
+  const productId = productTestId.split('-')[1];
+  const randomCount = Math.floor(Math.random() * 10 + 1);
+
+  // go to item
+  await page.getByTestId(productTestId).click();
   await expect(page).toHaveURL(new RegExp(`.*\\/product\\/${productId}`));
 
+  // fill quantity and add to cart
   await page.getByTestId('quantity').click();
   await page.getByTestId('quantity').fill(`${randomCount}`);
   await page.getByRole('button', { name: 'Add to cart' }).click();
 
-  const successMessage = await page.getByRole('alert');
+  // check success alert
+  const successMessage = page.getByRole('alert');
   await expect(successMessage).toBeVisible();
   await expect(successMessage).toHaveText('Product added to shopping cart.');
 
+  // go to cart
   await page.getByTestId('nav-cart').click();
   await expect(page).toHaveURL(/.*\/checkout/);
 
+  // check item and its quantity
   await expect(page.getByTestId('product-title')).toHaveText(`${productName}`);
   await expect(page.getByTestId('product-quantity')).toHaveValue(`${randomCount}`);
+
+  // proceed to checkout
+  await page.getByTestId('proceed-1').click();
+
+  // fill login
+  const testEmail = 'customer2@practicesoftwaretesting.com';
+  const testPassword = 'welcome01';
+
+  await page.getByTestId('email').fill(testEmail);
+  await page.getByTestId('password').fill(testPassword);
+  await page.getByTestId('login-submit').click();
+
+  // proceed to billing address
+  await page.getByTestId('proceed-2').click();
+
+  // fill billing address
+  await page.getByTestId('country').selectOption('KZ');
+  await page.getByTestId('postal_code').fill('050000');
+  await page.getByTestId('house_number').fill('42');
+  await page.getByTestId('street').fill('Rayimbek street');
+  await page.getByTestId('city').fill('Almaty');
+  await page.getByTestId('state').fill('Zhetysu');
+  await page.getByTestId('proceed-3').click();
+
+  // choose payment method
+  await page.getByTestId('payment-method').selectOption('buy-now-pay-later');
+  await page.getByTestId('monthly_installments').selectOption('3');
+  await page.getByTestId('finish').click();
+
+  const successPayment = page.getByTestId('payment-success-message');
+  await expect(successPayment).toBeVisible();
+  await expect(successPayment).toHaveText('Payment was successful');
 });
