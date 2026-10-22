@@ -4,7 +4,25 @@ test.only('should buy a product', async ({ page }) => {
   await page.goto('/');
 
   const container = page.getByTestId('');
-  const product = container.locator('a.card').first();
+  const productCards = container.locator('a.card');
+
+  let product = null;
+
+  for (let i = 0; i < (await productCards.count()); i++) {
+    const currentCard = productCards.nth(i);
+
+    const isOutOfStock = await currentCard.getByText('Out of stock', { exact: false }).isVisible();
+
+    if (!isOutOfStock) {
+      product = currentCard;
+      break;
+    }
+  }
+
+  if (!product) {
+    throw new Error('All products are out of stock');
+  }
+
   const productName = await product.getByTestId('product-name').textContent();
   const productTestId = (await product.getAttribute('data-test')) || '';
   const productId = productTestId.split('-')[1];
