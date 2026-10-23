@@ -37,7 +37,8 @@ Add to cart → cart shows the right item and quantity → checkout completes
 - in first tests i hardcoded data-test, then i found that items data-test changes sometimes, so i asked AI how can i get first element of container. Further, when i saw that some tests got error, because first item sometimes can be out of stock. So i prompted to AI how can i write a loop, so if first item is out of stock, check the next item and so on
 - asked for getAttribute functionality. I had some suggestions, but wanted to be sure
 - <img src='./screenshots/get_product_error.png' width='300'>
-  wrong using first() to locator, AI helped to fix
+    wrong using first() to locator, AI helped to fix
+- <img src='./screenshots/race_error_buy_product.png' width='300'> Got this problem in buy a product test, so used AI to rewrite my loop with promise waiting API not the alert to be visible
 
 ## Test case 4. Compare two products
 
