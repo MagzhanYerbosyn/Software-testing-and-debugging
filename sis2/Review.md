@@ -21,6 +21,7 @@ Valid credentials reach the account page; invalid ones show the error and do not
 ### Where i used AI and why
 
 - Wrote two tests by myself. Then after tests successfully completed, i shared my code with AI to do review of my code. He suggested me to use beforeEach to not duplicate first rows in each login test. So i refactored my code where i used test.describe and beforeEach
+- After i finished all test cases. I ran all of them again and unexpectedly login test case failed on successful login on each browser. I used one credential for login that worked when i was writing a test, then the account credentials started to give error message with too many failed attempts. So to test successful login, i created array with 3 test user credentials, if any of them fails, it goes to next. I faced problem where test runs faster than site works. On the site when account can not be logged in, it shows error message, but not fast enough and my test goes to check url. After unsuccessful attempts to fix it, I asked Claude to solve the problem, he gave me the solution for this race condition. So i implemented it.
 
 ## Test case 3. Buy a product
 
