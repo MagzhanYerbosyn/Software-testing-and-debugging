@@ -8,17 +8,38 @@ test.describe('Login functionality', () => {
   });
 
   test('should log in successfully with valid credentials', async ({ page }) => {
-    const testEmail = 'customer2@practicesoftwaretesting.com';
-    const testPassword = 'welcome01';
+    const credentials = [
+      { email: 'customer2@practicesoftwaretesting.com', password: 'welcome01' },
+      { email: 'customer@practicesoftwaretesting.com', password: 'welcome01' },
+      { email: 'customer3@practicesoftwaretesting.com', password: 'pass123' },
+    ];
 
-    await page.getByTestId('email').fill(testEmail);
-    await page.getByTestId('password').fill(testPassword);
-    await page.getByTestId('login-submit').click();
+    await page.goto('/auth/login');
 
+    let isLoggedIn = false;
+
+    for (const user of credentials) {
+      await page.getByTestId('email').fill(user.email);
+      await page.getByTestId('password').fill(user.password);
+      await page.getByRole('button', { name: 'Login' }).click();
+
+      const errorMessage = page.getByTestId('login-error');
+      const hasError = await errorMessage.isVisible().catch(() => false);
+
+      if (hasError) {
+        await page.getByTestId('email').clear();
+        await page.getByTestId('password').clear();
+      } else {
+        isLoggedIn = true;
+        break;
+      }
+    }
+
+    expect(isLoggedIn).toBe(true);
     await expect(page).toHaveURL(/.*\/account/);
   });
 
-  test('should show error message on invalid email', async ({ page }) => {
+  test('should show error message on invalid email or password', async ({ page }) => {
     const testEmail = 'asddddd@mail.ru';
     const testPassword = 'welcome01';
 

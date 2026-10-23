@@ -10,7 +10,7 @@ test.describe('Reset password functionality', () => {
     await expect(page).toHaveURL(/.*\/auth\/forgot-password/);
   });
 
-  test.only('should confirm to reset a password for a known email', async ({ page }) => {
+  test('should confirm to reset a password for a known email', async ({ page }) => {
     const testEmail = 'customer2@practicesoftwaretesting.com';
     await page.getByTestId('email').fill(`${testEmail}`);
 
@@ -21,7 +21,7 @@ test.describe('Reset password functionality', () => {
     await expect(successMessage).toHaveText('page.forgot-password.confirm');
   });
 
-  test.only('should reject to reset a password for a unknown email', async ({ page }) => {
+  test('should reject to reset a password for a unknown email', async ({ page }) => {
     const testEmail = 'wrongEmail@practicesoftwaretesting.com';
     await page.getByTestId('email').fill(`${testEmail}`);
 
