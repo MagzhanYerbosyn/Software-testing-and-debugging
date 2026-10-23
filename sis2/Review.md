@@ -47,3 +47,13 @@ Open two products, capture name and price, assert the comparison you state
 ### Where i used AI and why
 
 - No AI usage
+
+## Test case 5. Reset a password
+
+### Description of test case
+
+The forgot-password flow gives the expected confirmation for a known email, and an error for an invalid one
+
+### Where i used AI and why
+
+- No AI usage
