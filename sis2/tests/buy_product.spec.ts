@@ -8,6 +8,8 @@ test('should buy a product', async ({ page }) => {
 
   let product = null;
 
+  await expect(productCards.first()).toBeVisible();
+
   for (let i = 0; i < (await productCards.count()); i++) {
     const currentCard = productCards.nth(i);
 
@@ -54,12 +56,32 @@ test('should buy a product', async ({ page }) => {
   await page.getByTestId('proceed-1').click();
 
   // fill login
-  const testEmail = 'customer2@practicesoftwaretesting.com';
-  const testPassword = 'welcome01';
+  const credentials = [
+    { email: 'customer2@practicesoftwaretesting.com', password: 'welcome01' },
+    { email: 'customer@practicesoftwaretesting.com', password: 'welcome01' },
+    { email: 'customer3@practicesoftwaretesting.com', password: 'pass123' },
+  ];
 
-  await page.getByTestId('email').fill(testEmail);
-  await page.getByTestId('password').fill(testPassword);
-  await page.getByTestId('login-submit').click();
+  let loggedIn = false;
+
+  for (const user of credentials) {
+    await page.getByTestId('email').fill(user.email);
+    await page.getByTestId('password').fill(user.password);
+
+    const [response] = await Promise.all([
+      page.waitForResponse(
+        (res) => res.url().includes('/users/login') && res.request().method() === 'POST'
+      ),
+      page.getByRole('button', { name: 'Login' }).click(),
+    ]);
+
+    if (response.ok()) {
+      loggedIn = true;
+      break;
+    }
+  }
+
+  expect(loggedIn, 'None of the credentials worked').toBe(true);
 
   // proceed to billing address
   await page.getByTestId('proceed-2').click();
