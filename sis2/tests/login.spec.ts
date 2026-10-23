@@ -14,28 +14,31 @@ test.describe('Login functionality', () => {
       { email: 'customer3@practicesoftwaretesting.com', password: 'pass123' },
     ];
 
-    await page.goto('/auth/login');
-
-    let isLoggedIn = false;
+    let loggedIn = false;
 
     for (const user of credentials) {
+      await page.goto('/auth/login');
+
       await page.getByTestId('email').fill(user.email);
       await page.getByTestId('password').fill(user.password);
       await page.getByRole('button', { name: 'Login' }).click();
 
-      const errorMessage = page.getByTestId('login-error');
-      const hasError = await errorMessage.isVisible().catch(() => false);
+      const result = await Promise.race([
+        page.waitForURL(/.*\/account/, { timeout: 5000 }).then(() => 'success' as const),
+        page
+          .getByTestId('login-error')
+          .waitFor({ state: 'visible', timeout: 5000 })
+          .then(() => 'error' as const),
+      ]).catch(() => 'timeout' as const);
 
-      if (hasError) {
-        await page.getByTestId('email').clear();
-        await page.getByTestId('password').clear();
-      } else {
-        isLoggedIn = true;
+      if (result === 'success') {
+        loggedIn = true;
         break;
       }
     }
 
-    expect(isLoggedIn).toBe(true);
+    expect(loggedIn, 'None of the credentials worked').toBe(true);
+
     await expect(page).toHaveURL(/.*\/account/);
   });
 
