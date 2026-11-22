@@ -1,4 +1,5 @@
 import test, { expect } from '@playwright/test';
+import { getKnownEmail } from './utils/credentials';
 
 test.describe('Reset password functionality', () => {
   test.beforeEach(async ({ page }) => {
@@ -11,7 +12,7 @@ test.describe('Reset password functionality', () => {
   });
 
   test('should confirm to reset a password for a known email', async ({ page }) => {
-    const testEmail = 'customer2@practicesoftwaretesting.com';
+    const testEmail = getKnownEmail();
     await page.getByTestId('email').fill(`${testEmail}`);
 
     await page.getByTestId('forgot-password-submit').click();

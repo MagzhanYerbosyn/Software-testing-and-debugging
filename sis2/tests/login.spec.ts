@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { getCustomerCredentials } from './utils/credentials';
 
 test.describe('Login functionality', () => {
   test.beforeEach(async ({ page }) => {
@@ -8,11 +9,7 @@ test.describe('Login functionality', () => {
   });
 
   test('should log in successfully with valid credentials', async ({ page }) => {
-    const credentials = [
-      { email: 'customer2@practicesoftwaretesting.com', password: 'welcome01' },
-      { email: 'customer@practicesoftwaretesting.com', password: 'welcome01' },
-      { email: 'customer3@practicesoftwaretesting.com', password: 'pass123' },
-    ];
+    const credentials = getCustomerCredentials();
 
     let loggedIn = false;
 

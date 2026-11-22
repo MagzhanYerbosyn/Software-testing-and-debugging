@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { getCustomerCredentials } from './utils/credentials';
 
 test('should buy a product', async ({ page }) => {
   await page.goto('/');
@@ -56,11 +57,7 @@ test('should buy a product', async ({ page }) => {
   await page.getByTestId('proceed-1').click();
 
   // fill login
-  const credentials = [
-    { email: 'customer2@practicesoftwaretesting.com', password: 'welcome01' },
-    { email: 'customer@practicesoftwaretesting.com', password: 'welcome01' },
-    { email: 'customer3@practicesoftwaretesting.com', password: 'pass123' },
-  ];
+  const credentials = getCustomerCredentials();
 
   let loggedIn = false;
 
