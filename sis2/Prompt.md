@@ -42,6 +42,11 @@
    - Проверка успешной отправки запроса на восстановление пароля для существующего email.
    - Проверка отображения ошибки для незарегистрированного email.
 
+6. (Screenshot of folder structure) "where to put merge.config.ts" → project is in sis2/, so the workflow got working-directory: sis2, cache-dependency-path and sis2/ artefact paths.
+
+7.(CI log + PR checks) login test timing out on CI only, asked for next steps.
+
+8. (Failure screenshot + error-context.md) → the runner was shown a Cloudflare "verify you are human" page; fix: remove the extra page.goto('/auth/login') in the login test.
 Требования к коду:
 - Использовать роли (getByRole) и тест-айди (getByTestId по атрибуту data-test).
 - Избегать жестких задержек (waitForTimeout), использовать встроенные автоожидания Playwright (web-first assertions).
