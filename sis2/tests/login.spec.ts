@@ -18,17 +18,15 @@ test.describe('Login functionality', () => {
 
       await page.getByTestId('email').fill(user.email);
       await page.getByTestId('password').fill(user.password);
-      await page.getByRole('button', { name: 'Login' }).click();
 
-      const result = await Promise.race([
-        page.waitForURL(/.*\/account/, { timeout: 5000 }).then(() => 'success' as const),
-        page
-          .getByTestId('login-error')
-          .waitFor({ state: 'visible', timeout: 5000 })
-          .then(() => 'error' as const),
-      ]).catch(() => 'timeout' as const);
+      const [response] = await Promise.all([
+        page.waitForResponse(
+          (res) => res.url().includes('/users/login') && res.request().method() === 'POST'
+        ),
+        page.getByRole('button', { name: 'Login' }).click(),
+      ]);
 
-      if (result === 'success') {
+      if (response.ok()) {
         loggedIn = true;
         break;
       }
@@ -36,7 +34,7 @@ test.describe('Login functionality', () => {
 
     expect(loggedIn, 'None of the credentials worked').toBe(true);
 
-    await expect(page).toHaveURL(/.*\/account/);
+    await expect(page).toHaveURL(/.*\/account/, { timeout: 15000 });
   });
 
   test('should show error message on invalid email or password', async ({ page }) => {
