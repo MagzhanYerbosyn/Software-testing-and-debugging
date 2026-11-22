@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
 
 test('register a new customer successfully', async ({ page }) => {
-  const uniqueEmail = `user_${Date.now()}@example.com`;
+  const uniqueEmail = `user_${Date.now()}_${randomUUID().slice(0, 8)}@example.com`;
   const uniquePassword = `Pass_${Date.now()}!aB9`;
 
   await page.goto('/');
@@ -24,7 +25,14 @@ test('register a new customer successfully', async ({ page }) => {
   await page.getByTestId('email').fill(uniqueEmail);
   await page.getByTestId('password').fill(uniquePassword);
 
-  await page.getByRole('button', { name: 'Register' }).click();
+  const [response] = await Promise.all([
+    page.waitForResponse(
+      (res) => res.url().includes('/users/register') && res.request().method() === 'POST'
+    ),
+    page.getByRole('button', { name: 'Register' }).click(),
+  ]);
 
-  await expect(page).toHaveURL(/.*\/auth\/login/);
+  expect(response.ok(), `Register API returned ${response.status()}`).toBe(true);
+
+  await expect(page).toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
 });

@@ -1,0 +1,107 @@
+name: Playwright Tests
+
+on:
+  push: # every push to every branch
+  pull_request: # every PR
+  workflow_dispatch: # manual runs for timing
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: sis2 # the Playwright project lives in this subfolder
+
+jobs:
+  test:
+    name: Tests (shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: sis2/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          BASE_URL: ${{ vars.BASE_URL }}
+          CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+          CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
+          CUSTOMER2_EMAIL: ${{ secrets.CUSTOMER2_EMAIL }}
+          CUSTOMER2_PASSWORD: ${{ secrets.CUSTOMER2_PASSWORD }}
+          CUSTOMER3_EMAIL: ${{ secrets.CUSTOMER3_EMAIL }}
+          CUSTOMER3_PASSWORD: ${{ secrets.CUSTOMER3_PASSWORD }}
+
+      # upload-artifact ignores working-directory, so paths start with sis2/
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: sis2/blob-report
+          retention-days: 1
+
+      - name: Upload traces and JUnit
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.shardIndex }}
+          path: |
+            sis2/test-results/
+            sis2/reports/
+          retention-days: 14
+
+  merge-reports:
+    name: Merge reports
+    if: ${{ !cancelled() }}
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: sis2/package-lock.json
+      - run: npm ci
+
+      - name: Download blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: sis2/all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML + JUnit
+        run: npx playwright merge-reports --config merge.config.ts ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: sis2/playwright-report
+          retention-days: 14
+
+      - name: Upload merged JUnit
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-report
+          path: sis2/reports/junit-merged.xml
+          retention-days: 14
