@@ -14,8 +14,6 @@ test.describe('Login functionality', () => {
     let loggedIn = false;
 
     for (const user of credentials) {
-      await page.goto('/auth/login');
-
       await page.getByTestId('email').fill(user.email);
       await page.getByTestId('password').fill(user.password);
 
