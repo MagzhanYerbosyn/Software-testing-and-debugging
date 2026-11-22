@@ -5,5 +5,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+reports/
+all-blob-reports/
+.act-artifacts/
+.secrets
 
 .env
